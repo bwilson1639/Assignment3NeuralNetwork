@@ -6,6 +6,7 @@ class Node:
     def __init__(self, type):
 
         if type == 'input':
+            self.value = 0
             self.w1 = random.uniform(-1.0,1.0)
             self.w2 = random.uniform(-1.0, 1.0)
             self.w3 = random.uniform(-1.0, 1.0)
@@ -16,28 +17,35 @@ class Node:
             self.w8 = random.uniform(-1.0, 1.0)
             self.w9 = random.uniform(-1.0, 1.0)
             self.w10 = random.uniform(-1.0, 1.0)
+            self.weights = [self.w1, self.w2, self.w3, self.w4, self.w5, self.w6. self.w7, self.w8, self.w9, self.w10]
 
         elif type == 'hidden':
+            self.value = 0
             self.w1 =random.uniform(-1.0 , 1.0)
             self.w2 = random.uniform(-1.0, 1.0)
             self.w3 = random.uniform(-1.0, 1.0)
+            self.weights = [self.w1, self.w2, self.w3]
 
         elif type == 'biasI':
-            self.w1 = 1.0
-            self.w2 = 1.0
-            self.w3 = 1.0
-            self.w4 = 1.0
-            self.w5 = 1.0
-            self.w6 = 1.0
-            self.w7 = 1.0
-            self.w8 = 1.0
-            self.w9 = 1.0
-            self.w10 = 1.0
+            self.value = 1
+            self.w1 = random.uniform(-1.0, 1.0)
+            self.w2 = random.uniform(-1.0, 1.0)
+            self.w3 = random.uniform(-1.0, 1.0)
+            self.w4 = random.uniform(-1.0, 1.0)
+            self.w5 = random.uniform(-1.0, 1.0)
+            self.w6 = random.uniform(-1.0, 1.0)
+            self.w7 = random.uniform(-1.0, 1.0)
+            self.w8 = random.uniform(-1.0, 1.0)
+            self.w9 = random.uniform(-1.0, 1.0)
+            self.w10 = random.uniform(-1.0, 1.0)
+            self.weights = [self.w1, self.w2, self.w3, self.w4, self.w5, self.w6. self.w7, self.w8, self.w9, self.w10]
 
         else:
-            self.w1 = 1.0
-            self.w2 = 1.0
-            self.w3 = 1.0
+            self.value = 1
+            self.w1 = random.uniform(-1.0, 1.0)
+            self.w2 = random.uniform(-1.0, 1.0)
+            self.w3 = random.uniform(-1.0, 1.0)
+            self.weights = [self.w1, self.w2, self.w3]
 
 def initializeNodeNetwork ():
 
