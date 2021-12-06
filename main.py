@@ -38,3 +38,32 @@ class Node:
             self.w1 = 1.0
             self.w2 = 1.0
             self.w3 = 1.0
+
+def initializeNodeNetwork ():
+
+    inputLayer = []
+    hiddenLayer = []
+    #output layer just numbers, doesn't need nodes
+
+    temp = 0
+
+    while temp < 257:
+
+        if temp == 0:
+            inputLayer[0] = Node('biasI')
+
+        else:
+            inputLayer[temp] = Node('input')
+
+    temp = 0
+
+    while temp < 11:
+
+        if temp == 0:
+            hiddenLayer[0] = Node('biasH')
+
+        else:
+            hiddenLayer[temp] = Node('hidden')
+
+
+    return [inputLayer, hiddenLayer]
