@@ -7,45 +7,45 @@ class Node:
 
         if type == 'input':
             self.value = 0
-            self.w1 = random.uniform(-1.0,1.0)
-            self.w2 = random.uniform(-1.0, 1.0)
-            self.w3 = random.uniform(-1.0, 1.0)
-            self.w4 = random.uniform(-1.0, 1.0)
-            self.w5 = random.uniform(-1.0, 1.0)
-            self.w6 = random.uniform(-1.0, 1.0)
-            self.w7 = random.uniform(-1.0, 1.0)
-            self.w8 = random.uniform(-1.0, 1.0)
-            self.w9 = random.uniform(-1.0, 1.0)
-            self.w10 = random.uniform(-1.0, 1.0)
-            self.weights = [self.w1, self.w2, self.w3, self.w4, self.w5, self.w6. self.w7, self.w8, self.w9, self.w10]
+            w1 = random.uniform(-1.0,1.0)
+            w2 = random.uniform(-1.0, 1.0)
+            w3 = random.uniform(-1.0, 1.0)
+            w4 = random.uniform(-1.0, 1.0)
+            w5 = random.uniform(-1.0, 1.0)
+            w6 = random.uniform(-1.0, 1.0)
+            w7 = random.uniform(-1.0, 1.0)
+            w8 = random.uniform(-1.0, 1.0)
+            w9 = random.uniform(-1.0, 1.0)
+            w10 = random.uniform(-1.0, 1.0)
+            self.weights = [w1, w2, w3, w4, w5, w6, w7, w8, w9, w10]
 
         elif type == 'hidden':
             self.value = 0
-            self.w1 =random.uniform(-1.0 , 1.0)
-            self.w2 = random.uniform(-1.0, 1.0)
-            self.w3 = random.uniform(-1.0, 1.0)
-            self.weights = [self.w1, self.w2, self.w3]
+            w1 =random.uniform(-1.0 , 1.0)
+            w2 = random.uniform(-1.0, 1.0)
+            w3 = random.uniform(-1.0, 1.0)
+            self.weights = [w1, w2, w3]
 
         elif type == 'biasI':
             self.value = 1
-            self.w1 = random.uniform(-1.0, 1.0)
-            self.w2 = random.uniform(-1.0, 1.0)
-            self.w3 = random.uniform(-1.0, 1.0)
-            self.w4 = random.uniform(-1.0, 1.0)
-            self.w5 = random.uniform(-1.0, 1.0)
-            self.w6 = random.uniform(-1.0, 1.0)
-            self.w7 = random.uniform(-1.0, 1.0)
-            self.w8 = random.uniform(-1.0, 1.0)
-            self.w9 = random.uniform(-1.0, 1.0)
-            self.w10 = random.uniform(-1.0, 1.0)
-            self.weights = [self.w1, self.w2, self.w3, self.w4, self.w5, self.w6. self.w7, self.w8, self.w9, self.w10]
+            w1 = random.uniform(-1.0, 1.0)
+            w2 = random.uniform(-1.0, 1.0)
+            w3 = random.uniform(-1.0, 1.0)
+            w4 = random.uniform(-1.0, 1.0)
+            w5 = random.uniform(-1.0, 1.0)
+            w6 = random.uniform(-1.0, 1.0)
+            w7 = random.uniform(-1.0, 1.0)
+            w8 = random.uniform(-1.0, 1.0)
+            w9 = random.uniform(-1.0, 1.0)
+            w10 = random.uniform(-1.0, 1.0)
+            self.weights = [w1, w2, w3, w4, w5, w6, w7, w8, w9, w10]
 
         else:
             self.value = 1
-            self.w1 = random.uniform(-1.0, 1.0)
-            self.w2 = random.uniform(-1.0, 1.0)
-            self.w3 = random.uniform(-1.0, 1.0)
-            self.weights = [self.w1, self.w2, self.w3]
+            w1 = random.uniform(-1.0, 1.0)
+            w2 = random.uniform(-1.0, 1.0)
+            w3 = random.uniform(-1.0, 1.0)
+            self.weights = [w1, w2, w3]
 
 def initializeNodeNetwork ():
 
@@ -58,20 +58,24 @@ def initializeNodeNetwork ():
     while temp < 257:
 
         if temp == 0:
-            inputLayer[0] = Node('biasI')
+            inputLayer.append(Node('biasI'))
+            temp += 1
 
         else:
-            inputLayer[temp] = Node('input')
+            inputLayer.append(Node('input'))
+            temp += 1
 
     temp = 0
 
     while temp < 11:
 
         if temp == 0:
-            hiddenLayer[0] = Node('biasH')
+            hiddenLayer.append(Node('biasH'))
+            temp += 1
 
         else:
-            hiddenLayer[temp] = Node('hidden')
+            hiddenLayer.append(Node('hidden'))
+            temp += 1
 
 
     return [inputLayer, hiddenLayer]
@@ -93,25 +97,27 @@ def trainingAlgorithm () :
 
         for case in lineList:
 
-            values = lineList.split()
+            values = case.split()
             temp = 0
-
+            isBias = False
             for Node in nodeNetwork[0]:
-                if Node.value != 0:
+                if isBias != True:
+                    isBias = True
+                else:
+                    Node.value = float(values[temp])
 
-                    Node.value = values[temp]
 
-            temp = 0
             for Node in nodeNetwork[1]:
 
                 hiddenValue = 0
-                if Node.value != 0:
 
-                    for INode in nodeNetwork[0]:
 
-                        hiddenValue = hiddenValue + INode.value * INode.weights[temp]
+                for INode in nodeNetwork[0]:
+                    temp = 0
+                    while temp < 10:
+                        hiddenValue += INode.value * INode.weights[temp]
+                        temp += 1
 
-                temp += 1
                 Node.value = hiddenValue
 
             outputNode1 = 0
@@ -121,8 +127,11 @@ def trainingAlgorithm () :
             for Node in nodeNetwork[1]:
 
                 outputNode1 = outputNode1 + Node.value * Node.weights[0]
+                print(outputNode1)
                 outputNode8 = outputNode8 + Node.value * Node.weights[1]
+                print(outputNode8)
                 outputNode9 = outputNode9 + Node.value * Node.weights[2]
+                print(outputNode9)
 
             if values[-3] == 1 and outputNode1 >= outputNode8 and outputNode1 >= outputNode9:
                 accuracyTotal += 1
@@ -130,8 +139,9 @@ def trainingAlgorithm () :
                 accuracyTotal += 1
             elif values[-1] == 1 and outputNode9 > outputNode1 and outputNode9 > outputNode8:
                 accuracyTotal += 1
-            else:
-                continue
-                #backwards propagate
+
+
 
         epoch += 1
+
+trainingAlgorithm()
