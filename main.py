@@ -140,25 +140,25 @@ def trainingAlgorithm () :
             sigNode8 = 1/(1 + math.exp(-nodeOutput8))
             sigNode9 = 1/(1 + math.exp(-nodeOutput9))
 
-            if int(values[-3]) == 1 and sigNode1 >= sigNode8 and sigNode1 >= sigNode9:
+            if float(values[-3]) == 1.0 and sigNode1 >= sigNode8 and sigNode1 >= sigNode9:
                 accuracyTotal += 1
-            elif int(values[-2]) == 1 and sigNode8 > sigNode1 and sigNode8 >= sigNode9:
+            elif float(values[-2]) == 1.0 and sigNode8 > sigNode1 and sigNode8 >= sigNode9:
                 accuracyTotal += 1
-            elif int(values[-1]) == 1 and sigNode9 > sigNode1 and sigNode9 > sigNode8:
+            elif float(values[-1]) == 1.0 and sigNode9 > sigNode1 and sigNode9 > sigNode8:
                 accuracyTotal += 1
 
             #backwards propagation for output nodes
-            deltaOne = (sigNode1 * (1 - sigNode1)) * (sigNode1 - int(values[-3]))
+            deltaOne = (sigNode1 * (1.0 - sigNode1)) * (sigNode1 - float(values[-3]))
 
             for Node in nodeNetwork[1]:
                 Node.weights[0] = Node.weights[0] + trainingRate * Node.value * deltaOne
 
-            deltaEight = (sigNode8 * (1 - sigNode8)) * (sigNode8 - int(values[-2]))
+            deltaEight = (sigNode8 * (1 - sigNode8)) * (sigNode8 - float(values[-2]))
 
             for Node in nodeNetwork[1]:
                 Node.weights[1] = Node.weights[1] + trainingRate * Node.value * deltaEight
 
-            deltaNine = (sigNode9 * (1 - sigNode9)) * (sigNode9 - int(values[-1]))
+            deltaNine = (sigNode9 * (1 - sigNode9)) * (sigNode9 - float(values[-1]))
 
             for Node in nodeNetwork[1]:
                 Node.weights[2] = Node.weights[2] + trainingRate * Node.value * deltaNine
@@ -184,11 +184,11 @@ def trainingAlgorithm () :
 
 
             temp = 0
-            for Node in nodeNetwork[1]:
+            while temp < 10:
                 derivative = sigmaList[temp] * (1 - sigmaList[temp])
-                deltaHidden[temp] = derivative * Node.weights[0] * deltaOne
-                deltaHidden[temp] += derivative * Node.weights[1] * deltaEight
-                deltaHidden[temp] += derivative * Node.weights[2] * deltaNine
+                deltaHidden[temp] = derivative * nodeNetwork[1][temp].weights[0] * deltaOne
+                deltaHidden[temp] += derivative * nodeNetwork[1][temp].weights[1] * deltaEight
+                deltaHidden[temp] += derivative * nodeNetwork[1][temp].weights[2] * deltaNine
                 temp += 1
 
             for Node in nodeNetwork[0]:
@@ -196,7 +196,7 @@ def trainingAlgorithm () :
 
                 while temp < 10:
                     Node.weights[temp] = Node.weights[temp] + trainingRate + deltaHidden[temp]
-
+        #end of for cae in lineList
 
 
 
