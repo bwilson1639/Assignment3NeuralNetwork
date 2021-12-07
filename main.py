@@ -83,9 +83,9 @@ def initializeNodeNetwork ():
 
 def trainingAlgorithm () :
 
-    trainingRate = 0.1
+    trainingRate = 0.3
 
-    trainingFile = open('test.txt', 'r')
+    trainingFile = open('train.txt', 'r')
 
     lineList = trainingFile.readlines()
 
@@ -97,7 +97,7 @@ def trainingAlgorithm () :
     while accuracy < 90:
 
         accuracyTotal = 0
-
+        totalTotal = 0
         for case in lineList:
 
             values = case.split()
@@ -109,19 +109,22 @@ def trainingAlgorithm () :
                 else:
                     Node.value = float(values[temp])
 
-
+            isBias = False
             for Node in nodeNetwork[1]:
 
-                hiddenValue = 0
+                if isBias !=True:
+                    isBias = True
+                else:
+                    hiddenValue = 0
 
+                    for INode in nodeNetwork[0]:
+                        temp = 0
+                        while temp < 10:
+                            hiddenValue += INode.value * INode.weights[temp]
+                            temp += 1
 
-                for INode in nodeNetwork[0]:
-                    temp = 0
-                    while temp < 10:
-                        hiddenValue += INode.value * INode.weights[temp]
-                        temp += 1
+                    Node.value = 1 / (1 + math.exp(-hiddenValue))
 
-                Node.value = 1/(1 + math.exp(-hiddenValue))
 
             nodeOutput1 = 0.0
             nodeOutput8 = 0.0
@@ -167,24 +170,24 @@ def trainingAlgorithm () :
             #calculate the product of weights times value
             temp = 0
 
-            inputFunction = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            inputFunction = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             sigmaList = inputFunction
             deltaHidden = inputFunction
             for Node in nodeNetwork[0]:
                 temp = 0
 
-                while temp < 10:
-                    inputFunction[temp] += Node.value * Node.weights[temp]
+                while temp < len(nodeNetwork[1]):
+                    inputFunction[temp] = inputFunction[temp] + Node.value * Node.weights[temp]
                     temp += 1
 
             temp = 0
-            while temp < 10:
+            while temp < len(nodeNetwork[1]):
                 sigmaList[temp] = 1/(1 + math.exp(-inputFunction[temp]))
                 temp += 1
 
 
             temp = 0
-            while temp < 10:
+            while temp < 11:
                 derivative = sigmaList[temp] * (1 - sigmaList[temp])
                 deltaHidden[temp] = derivative * nodeNetwork[1][temp].weights[0] * deltaOne
                 deltaHidden[temp] += derivative * nodeNetwork[1][temp].weights[1] * deltaEight
@@ -194,16 +197,15 @@ def trainingAlgorithm () :
             for Node in nodeNetwork[0]:
                 temp = 0
 
-                while temp < 10:
+                while temp < 11:
                     Node.weights[temp] = Node.weights[temp] + trainingRate + deltaHidden[temp]
+                    temp += 1
+
+            totalTotal += 1
         #end of for cae in lineList
 
-
-
-
-
-
-
+        accuracy = (accuracyTotal / totalTotal) * 100
+        print("accuracy is:" + str(accuracy))
 
         epoch += 1
 
