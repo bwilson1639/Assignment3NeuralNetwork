@@ -1,3 +1,4 @@
+import math
 import random
 
 
@@ -82,6 +83,8 @@ def initializeNodeNetwork ():
 
 def trainingAlgorithm () :
 
+    trainingRate = 0.1
+
     trainingFile = open('test.txt', 'r')
 
     lineList = trainingFile.readlines()
@@ -118,27 +121,87 @@ def trainingAlgorithm () :
                         hiddenValue += INode.value * INode.weights[temp]
                         temp += 1
 
-                Node.value = hiddenValue
+                Node.value = 1/(1 + math.exp(-hiddenValue))
 
-            outputNode1 = 0
-            outputNode8 = 0
-            outputNode9 = 0
+            nodeOutput1 = 0.0
+            nodeOutput8 = 0.0
+            nodeOutput9 = 0.0
 
             for Node in nodeNetwork[1]:
 
-                outputNode1 = outputNode1 + Node.value * Node.weights[0]
-                print(outputNode1)
-                outputNode8 = outputNode8 + Node.value * Node.weights[1]
-                print(outputNode8)
-                outputNode9 = outputNode9 + Node.value * Node.weights[2]
-                print(outputNode9)
+                nodeOutput1 = nodeOutput1 + Node.value * Node.weights[0]
 
-            if values[-3] == 1 and outputNode1 >= outputNode8 and outputNode1 >= outputNode9:
+                nodeOutput8 = nodeOutput8 + Node.value * Node.weights[1]
+
+                nodeOutput9 = nodeOutput9 + Node.value * Node.weights[2]
+
+
+            sigNode1 = 1/(1 + math.exp(-nodeOutput1))
+            sigNode8 = 1/(1 + math.exp(-nodeOutput8))
+            sigNode9 = 1/(1 + math.exp(-nodeOutput9))
+
+            if int(values[-3]) == 1 and sigNode1 >= sigNode8 and sigNode1 >= sigNode9:
                 accuracyTotal += 1
-            elif values[-2] == 1 and outputNode8 > outputNode1 and outputNode8 >= outputNode9:
+            elif int(values[-2]) == 1 and sigNode8 > sigNode1 and sigNode8 >= sigNode9:
                 accuracyTotal += 1
-            elif values[-1] == 1 and outputNode9 > outputNode1 and outputNode9 > outputNode8:
+            elif int(values[-1]) == 1 and sigNode9 > sigNode1 and sigNode9 > sigNode8:
                 accuracyTotal += 1
+
+            #backwards propagation for output nodes
+            deltaOne = (sigNode1 * (1 - sigNode1)) * (sigNode1 - int(values[-3]))
+
+            for Node in nodeNetwork[1]:
+                Node.weights[0] = Node.weights[0] + trainingRate * Node.value * deltaOne
+
+            deltaEight = (sigNode8 * (1 - sigNode8)) * (sigNode8 - int(values[-2]))
+
+            for Node in nodeNetwork[1]:
+                Node.weights[1] = Node.weights[1] + trainingRate * Node.value * deltaEight
+
+            deltaNine = (sigNode9 * (1 - sigNode9)) * (sigNode9 - int(values[-1]))
+
+            for Node in nodeNetwork[1]:
+                Node.weights[2] = Node.weights[2] + trainingRate * Node.value * deltaNine
+
+
+            #calculate the product of weights times value
+            temp = 0
+
+            inputFunction = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            sigmaList = inputFunction
+            deltaHidden = inputFunction
+            for Node in nodeNetwork[0]:
+                temp = 0
+
+                while temp < 10:
+                    inputFunction[temp] += Node.value * Node.weights[temp]
+                    temp += 1
+
+            temp = 0
+            while temp < 10:
+                sigmaList[temp] = 1/(1 + math.exp(-inputFunction[temp]))
+                temp += 1
+
+
+            temp = 0
+            for Node in nodeNetwork[1]:
+                derivative = sigmaList[temp] * (1 - sigmaList[temp])
+                deltaHidden[temp] = derivative * Node.weights[0] * deltaOne
+                deltaHidden[temp] += derivative * Node.weights[1] * deltaEight
+                deltaHidden[temp] += derivative * Node.weights[2] * deltaNine
+                temp += 1
+
+            for Node in nodeNetwork[0]:
+                temp = 0
+
+                while temp < 10:
+                    Node.weights[temp] = Node.weights[temp] + trainingRate + deltaHidden[temp]
+
+
+
+
+
+
 
 
 
