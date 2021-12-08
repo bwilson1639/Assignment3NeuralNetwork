@@ -97,6 +97,11 @@ def trainingAlgorithm () :
 
     lineList = trainingFile.readlines()
 
+    trainingFile.close()
+
+    trainingOutput = open('train_output.txt', 'w')
+
+    trainingOutput.write("my_predicted_digit target(correct_digit)")
     accuracy = 0
     epoch = 0
 
@@ -105,7 +110,7 @@ def trainingAlgorithm () :
     accuracyTotal = 0
     totalTotal = 0
 
-    while accuracy < 95:
+    while accuracy < 97:
         for line in lineList:
 
             binaryValue = line[-8:].split()
@@ -214,7 +219,58 @@ def trainingAlgorithm () :
         epoch += 1
         accuracy = (accuracyTotal/totalTotal) * 100
         print(str(accuracy) + " " + str(epoch))
+        fileOutput = str()
 
+
+        #to save the data
+        #line 1: weights of input: "w1,w2,w3,w4,w5,w6,w7,w8,w9,w10 ... wn8,wn9,wn10\n
+        #line 2: weights of hidden input "w1,w2,w3 w1,w2,w3 w1,w2,w3"
+
+        trainingOutputFile = open("neuralNetwork.txt," 'r')
+        inputWeightLine = ""
+
+        temp = 0
+        while temp < len(nodeNetwork[0]):
+
+            innerTemp = 0
+
+            while innerTemp < 10:
+                if innerTemp == 0:
+                    inputWeightLine = inputWeightLine + str(nodeNetwork[0][temp].weights[innerTemp])
+
+                else:
+                    inputWeightLine = inputWeightLine + "," + str(nodeNetwork[0][temp].weights[innerTemp])
+                innerTemp += 1
+
+            inputWeightLine = inputWeightLine + " "
+
+            temp += 1
+
+        inputWeightLine = inputWeightLine + "\n"
+        trainingOutputFile.write(inputWeightLine)
+
+        hiddenWeightLine = ""
+
+        temp = 0
+        while temp < len(nodeNetwork[1]):
+
+            innerTemp = 0
+
+            while innerTemp < 3:
+                if innerTemp == 0:
+                    hiddenWeightLine = hiddenWeightLine + str(nodeNetwork[1][temp].weights[innerTemp])
+
+                else:
+                    hiddenWeightLine = hiddenWeightLine + "," + str(nodeNetwork[1][temp].weights[innerTemp])
+                innerTemp += 1
+
+            hiddenWeightLine = hiddenWeightLine + " "
+
+            temp += 1
+
+        trainingOutputFile.write(inputWeightLine)
+
+        #create output
 
 
 trainingAlgorithm()
