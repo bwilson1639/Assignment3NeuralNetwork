@@ -102,109 +102,118 @@ def trainingAlgorithm () :
 
     nodeNetwork = initializeNodeNetwork()
 
-    for line in lineList:
+    accuracyTotal = 0
+    totalTotal = 0
 
-        binaryValue = line[-8:].split()
-        line = line[:-8].split()
+    while accuracy < 95:
+        for line in lineList:
 
-        line = [1.0] + line
-        input = []
-        output = []
-        for value in line:
-            value = float(value)
-            input.append(value)
+            binaryValue = line[-8:].split()
+            line = line[:-8].split()
 
-        for value in binaryValue:
-            value = float(value)
-            output.append(value)
+            line = [1.0] + line
+            input = []
+            output = []
+            for value in line:
+                value = float(value)
+                input.append(value)
 
-        temp = 0
-        while temp < (len(nodeNetwork[0])):
-            nodeNetwork[0][temp].value = input[temp]
-            temp += 1
+            for value in binaryValue:
+                value = float(value)
+                output.append(value)
+
+            temp = 0
+            while temp < (len(nodeNetwork[0])):
+                nodeNetwork[0][temp].value = input[temp]
+                temp += 1
 
 
-        hiddenLayer = []
-        temp = 0
-        while temp < 10:
-            sum = 0
-            innerTemp = 0
-            while innerTemp < len(nodeNetwork[0]):
-                sum += (nodeNetwork[0][innerTemp].weights[temp] * nodeNetwork[0][innerTemp].value)
-                innerTemp += 1
-            hiddenLayer.append(sigmoidFuncion(sum))
-            temp += 1
-        hiddenLayer = [1.0] + hiddenLayer
+            hiddenLayer = []
+            temp = 0
+            while temp < 10:
+                sum = 0
+                innerTemp = 0
+                while innerTemp < len(nodeNetwork[0]):
+                    sum += (nodeNetwork[0][innerTemp].weights[temp] * nodeNetwork[0][innerTemp].value)
+                    innerTemp += 1
+                hiddenLayer.append(sigmoidFuncion(sum))
+                temp += 1
+            hiddenLayer = [1.0] + hiddenLayer
 
-        temp = 0
-        while temp < len(nodeNetwork[1]):
-            nodeNetwork[1][temp].value = hiddenLayer[temp]
-            temp += 1
+            temp = 0
+            while temp < len(nodeNetwork[1]):
+                nodeNetwork[1][temp].value = hiddenLayer[temp]
+                temp += 1
 
-        outputLayer = []
+            outputLayer = []
 
-        temp = 0
-        while temp < 3:
-            sum = 0
-            innerTemp = 0
-            while innerTemp < len(nodeNetwork[1]):
-                sum += (nodeNetwork[1][innerTemp].weights[temp] * nodeNetwork[1][innerTemp].value)
-                innerTemp += 1
-            outputLayer.append(sigmoidFuncion(sum))
-            temp += 1
-        print(outputLayer)
+            temp = 0
+            while temp < 3:
+                sum = 0
+                innerTemp = 0
+                while innerTemp < len(nodeNetwork[1]):
+                    sum += (nodeNetwork[1][innerTemp].weights[temp] * nodeNetwork[1][innerTemp].value)
+                    innerTemp += 1
+                outputLayer.append(sigmoidFuncion(sum))
+                temp += 1
 
-        error = []
-        temp = 0
-        while temp < 3:
-            calculate = output[temp] - outputLayer[temp]
-            error.append(calculate)
-            temp += 1
+            error = []
+            temp = 0
+            while temp < 3:
+                calculate = output[temp] - outputLayer[temp]
+                error.append(calculate)
+                temp += 1
 
-        print(error)
 
-        deltaoutput = []
-        temp = 0
-        while temp < 3:
-            calculate = error[temp] * derivative(outputLayer[temp])
-            deltaoutput.append(calculate)
-            temp += 1
+            deltaoutput = []
+            temp = 0
+            while temp < 3:
+                calculate = error[temp] * derivative(outputLayer[temp])
+                deltaoutput.append(calculate)
+                temp += 1
 
-        print(deltaoutput)
 
-        temp = 0
-        while temp < len(hiddenLayer):
-            for i in range(3):
-                nodeNetwork[1][temp].weights[i] += trainingRate * nodeNetwork[1][temp].value * deltaoutput[i]
-            temp += 1
+            temp = 0
+            while temp < len(hiddenLayer):
+                for i in range(3):
+                    nodeNetwork[1][temp].weights[i] += trainingRate * nodeNetwork[1][temp].value * deltaoutput[i]
+                temp += 1
 
-        hiddenLayer.pop(0)
+            hiddenLayer.pop(0)
 
-        deltaHidden = []
-        temp = 0
-        print(deltaHidden)
-        print()
-        while temp < 10:
-            calculate = 0
-            calculate =  nodeNetwork[1][temp].weights[0] * deltaoutput[0]
-            calculate += nodeNetwork[1][temp].weights[1] * deltaoutput[1]
-            calculate += nodeNetwork[1][temp].weights[2] * deltaoutput[2]
-            deltaHidden.append(calculate * derivative(hiddenLayer[temp]))
-            temp += 1
+            deltaHidden = []
+            temp = 0
 
-        print(deltaHidden)
+            while temp < 10:
+                calculate = 0
+                calculate =  nodeNetwork[1][temp].weights[0] * deltaoutput[0]
+                calculate += nodeNetwork[1][temp].weights[1] * deltaoutput[1]
+                calculate += nodeNetwork[1][temp].weights[2] * deltaoutput[2]
+                deltaHidden.append(calculate * derivative(hiddenLayer[temp]))
+                temp += 1
 
-        temp = 0
-        while temp < len(nodeNetwork[0]):
-            innerTemp = 0
-            while innerTemp < 10:
-                nodeNetwork[0][temp].weights[innerTemp] += trainingRate * nodeNetwork[0][temp].value * deltaHidden[innerTemp]
-                innerTemp += 1
-            temp += 1
 
-        
+            temp = 0
+            while temp < len(nodeNetwork[0]):
+                innerTemp = 0
+                while innerTemp < 10:
+                    nodeNetwork[0][temp].weights[innerTemp] += trainingRate * nodeNetwork[0][temp].value * deltaHidden[innerTemp]
+                    innerTemp += 1
+                temp += 1
 
-        break
+
+            if float(output[0]) == 1.0 and outputLayer[0] >= outputLayer[1] and outputLayer[0] >= outputLayer[2]:
+                accuracyTotal += 1
+            elif float(output[1]) == 1.0 and outputLayer[1] > outputLayer[0] and outputLayer[1] >= outputLayer[2]:
+                accuracyTotal += 1
+            elif float(output[2]) == 1.0 and outputLayer[2] > outputLayer[0] and outputLayer[2] > outputLayer[1]:
+                accuracyTotal += 1
+
+            totalTotal += 1
+
+        epoch += 1
+        accuracy = (accuracyTotal/totalTotal) * 100
+        print(str(accuracy) + " " + str(epoch))
 
 
 
