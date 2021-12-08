@@ -171,17 +171,18 @@ def trainingAlgorithm () :
             temp = 0
 
             inputFunction = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            sigmaList = inputFunction
-            deltaHidden = inputFunction
+            sigmaList = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            deltaHidden = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             for Node in nodeNetwork[0]:
                 temp = 0
 
-                while temp < len(nodeNetwork[1]):
+
+                while temp < 10:
                     inputFunction[temp] = inputFunction[temp] + Node.value * Node.weights[temp]
                     temp += 1
 
             temp = 0
-            while temp < len(nodeNetwork[1]):
+            while temp < 10:
                 sigmaList[temp] = 1/(1 + math.exp(-inputFunction[temp]))
                 temp += 1
 
@@ -197,7 +198,7 @@ def trainingAlgorithm () :
             for Node in nodeNetwork[0]:
                 temp = 0
 
-                while temp < 11:
+                while temp < 10:
                     Node.weights[temp] = Node.weights[temp] + trainingRate + deltaHidden[temp]
                     temp += 1
 
