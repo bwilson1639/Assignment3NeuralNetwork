@@ -83,7 +83,7 @@ def initializeNodeNetwork ():
 
 def trainingAlgorithm () :
 
-    trainingRate = 0.3
+    trainingRate = 0.2
 
     trainingFile = open('train.txt', 'r')
 
@@ -151,20 +151,20 @@ def trainingAlgorithm () :
                 accuracyTotal += 1
 
             #backwards propagation for output nodes
-            deltaOne = (sigNode1 * (1.0 - sigNode1)) * (sigNode1 - float(values[-3]))
+            deltaOne = (sigNode1 * (1.0 - sigNode1)) * (float(values[-3]) - sigNode1)
 
-            for Node in nodeNetwork[1]:
-                Node.weights[0] = Node.weights[0] + trainingRate * Node.value * deltaOne
+            for i in range(len(nodeNetwork[1]) - 1):
+                nodeNetwork[1][i].weights[0] = nodeNetwork[1][i].weights[0] + trainingRate * nodeNetwork[1][i].value * deltaOne
 
-            deltaEight = (sigNode8 * (1 - sigNode8)) * (sigNode8 - float(values[-2]))
+            deltaEight = (sigNode8 * (1 - sigNode8)) * (float(values[-2]) - sigNode8)
 
-            for Node in nodeNetwork[1]:
-                Node.weights[1] = Node.weights[1] + trainingRate * Node.value * deltaEight
+            for i in range(len(nodeNetwork[1]) -1):
+                nodeNetwork[1][i].weights[1] = nodeNetwork[1][i].weights[1] + trainingRate * nodeNetwork[1][i].value * deltaEight
 
-            deltaNine = (sigNode9 * (1 - sigNode9)) * (sigNode9 - float(values[-1]))
+            deltaNine = (sigNode9 * (1 - sigNode9)) * (float(values[-1]) - sigNode9)
 
-            for Node in nodeNetwork[1]:
-                Node.weights[2] = Node.weights[2] + trainingRate * Node.value * deltaNine
+            for i in range(len(nodeNetwork[1]) -1):
+                nodeNetwork[1][i].weights[2] = nodeNetwork[1][i].weights[2] + trainingRate * nodeNetwork[1][i].value * deltaNine
 
 
             #calculate the product of weights times value
@@ -199,7 +199,7 @@ def trainingAlgorithm () :
                 temp = 0
 
                 while temp < 10:
-                    Node.weights[temp] = Node.weights[temp] + trainingRate + deltaHidden[temp]
+                    Node.weights[temp] = Node.weights[temp] + trainingRate * deltaHidden[temp] * Node.value
                     temp += 1
 
             totalTotal += 1
