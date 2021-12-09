@@ -89,11 +89,11 @@ def derivative(value):
     output = value * (1- value)
     return float(output)
 
-def trainingAlgorithm () :
+def trainingAlgorithm (inputFile, outputFile) :
 
     trainingRate = 0.2
 
-    trainingFile = open('train.txt', 'r')
+    trainingFile = open(inputFile, 'r')
 
     lineList = trainingFile.readlines()
 
@@ -105,15 +105,19 @@ def trainingAlgorithm () :
 
     nodeNetwork = initializeNodeNetwork()
 
-    accuracyTotal = 0
-    totalTotal = 0
+
 
 
     while accuracy < 95:
+
+        accuracyTotal = 0
+        totalTotal = 0
+
+        targetValues = []
+        actualValues = []
+
         for line in lineList:
 
-            targetValues = []
-            actualValues = []
 
             binaryValue = line[-8:].split()
             line = line[:-8].split()
@@ -218,17 +222,48 @@ def trainingAlgorithm () :
 
             totalTotal += 1
 
+            if output[0] > output[1] + output[2]:
+                targetValues.append('1')
+
+            elif output[1] > output[0] + output[2]:
+                targetValues.append('8')
+
+            else:
+                targetValues.append('9')
+
+            if outputLayer[0] > outputLayer[1] and outputLayer[0] > outputLayer[2]:
+                actualValues.append('1')
+            elif outputLayer[1] > outputLayer[0] and outputLayer[1] > outputLayer[2]:
+                actualValues.append('8')
+            else:
+                actualValues.append('9')
+
+
         epoch += 1
         accuracy = (accuracyTotal/totalTotal) * 100
         print(str(accuracy) + " " + str(epoch))
-        fileOutput = str()
+
+        trainingStringFile = open(outputFile, 'w')
+
+        trainingStringFile.write("my_predicted_digit target(correct_digit)\n")
+        temp = 0
+
+        while temp < len(actualValues):
+            tempString = str(targetValues[temp]) + "                   " + str(actualValues[temp]) + "\n"
+            trainingStringFile.write(tempString)
+            temp += 1
+
+        tempString = "Accuracy: " + str(accuracyTotal) + "/" + str(totalTotal) + "=" + str(round(accuracy, 4))
+
+        trainingStringFile.write(tempString)
+        trainingStringFile.close()
 
 
         #to save the data
         #line 1: weights of input: "w1,w2,w3,w4,w5,w6,w7,w8,w9,w10 ... wn8,wn9,wn10\n
         #line 2: weights of hidden input "w1,w2,w3 w1,w2,w3 w1,w2,w3"
 
-        trainingOutputFile = open("neuralNetwork.txt," , 'w')
+        trainingOutputFile = open("neuralNetwork.txt", 'w')
         inputWeightLine = ""
 
         temp = 0
@@ -279,4 +314,4 @@ def trainingAlgorithm () :
 
 
 
-trainingAlgorithm()
+trainingAlgorithm('train.txt', "train_output.txt")
