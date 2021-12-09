@@ -1,5 +1,6 @@
 import math
 import random
+import sys
 
 
 class Node:
@@ -197,7 +198,7 @@ def trainingAlgorithm (inputFile, outputFile) :
 
             while temp < 10:
                 calculate = 0
-                calculate =  nodeNetwork[1][temp].weights[0] * deltaoutput[0]
+                calculate = nodeNetwork[1][temp].weights[0] * deltaoutput[0]
                 calculate += nodeNetwork[1][temp].weights[1] * deltaoutput[1]
                 calculate += nodeNetwork[1][temp].weights[2] * deltaoutput[2]
                 deltaHidden.append(calculate * derivative(hiddenLayer[temp]))
@@ -344,9 +345,83 @@ def testAlgorithm (inputFile, outputFile):
 
         temp += 1
 
-    #forward propagation
+    #get data from testing
 
-    
+    testingFile = open(inputFile, 'r')
+
+    lineList = testingFile.readlines()
+
+    testingFile.close()
+
+    testTotal = []
+    for line in lineList:
+
+        values = line.split()
+
+        input = [1.0]
+
+        for value in values:
+            value = float(value)
+            input.append(value)
+
+        temp = 0
+        while temp < len(neuralNetwork[0]):
+            neuralNetwork[0][temp].value = input[temp]
+            temp += 1
+
+        hiddenLayer = []
+        temp = 0
+        while temp < 10:
+            sum = 0
+            innerTemp = 0
+            while innerTemp < len(neuralNetwork[0]):
+                sum += (neuralNetwork[0][innerTemp].weights[temp] * neuralNetwork[0][innerTemp].value)
+                innerTemp += 1
+            hiddenLayer.append(sigmoidFuncion(sum))
+            temp += 1
+        hiddenLayer = [1.0] + hiddenLayer
+
+        temp = 0
+        while temp < len(neuralNetwork[1]):
+            neuralNetwork[1][temp].value = hiddenLayer[temp]
+            temp += 1
+
+        outputLayer = []
+
+        temp = 0
+        while temp < 3:
+            sum = 0
+            innerTemp = 0
+            while innerTemp < len(neuralNetwork[1]):
+                sum += (neuralNetwork[1][innerTemp].weights[temp] * neuralNetwork[1][innerTemp].value)
+                innerTemp += 1
+            outputLayer.append(sigmoidFuncion(sum))
+            temp += 1
+
+        if outputLayer[0] >= outputLayer[1] and outputLayer[0] >= outputLayer[2]:
+            testTotal.append('1')
+
+        elif outputLayer[1] > outputLayer[0] and outputLayer[1] >= outputLayer[2]:
+            testTotal.append('8')
+
+        else:
+            testTotal.append('9')
+
+
+    finalFile = open(outputFile, 'w')
+
+    for number in testTotal:
+        finalFile.write(number + "\n")
+
+    finalFile.close()
+
+importFile = str(sys.argv[1])
+exportFile = str(sys.argv[2])
+
+if importFile == "train.txt":
+    trainingAlgorithm(importFile, exportFile)
+else:
+    testAlgorithm(importFile, exportFile)
 
 
 
