@@ -99,9 +99,7 @@ def trainingAlgorithm () :
 
     trainingFile.close()
 
-    trainingOutput = open('train_output.txt', 'w')
 
-    trainingOutput.write("my_predicted_digit target(correct_digit)")
     accuracy = 0
     epoch = 0
 
@@ -110,8 +108,12 @@ def trainingAlgorithm () :
     accuracyTotal = 0
     totalTotal = 0
 
-    while accuracy < 97:
+
+    while accuracy < 95:
         for line in lineList:
+
+            targetValues = []
+            actualValues = []
 
             binaryValue = line[-8:].split()
             line = line[:-8].split()
@@ -226,7 +228,7 @@ def trainingAlgorithm () :
         #line 1: weights of input: "w1,w2,w3,w4,w5,w6,w7,w8,w9,w10 ... wn8,wn9,wn10\n
         #line 2: weights of hidden input "w1,w2,w3 w1,w2,w3 w1,w2,w3"
 
-        trainingOutputFile = open("neuralNetwork.txt," 'r')
+        trainingOutputFile = open("neuralNetwork.txt," , 'w')
         inputWeightLine = ""
 
         temp = 0
@@ -268,9 +270,13 @@ def trainingAlgorithm () :
 
             temp += 1
 
-        trainingOutputFile.write(inputWeightLine)
+        trainingOutputFile.write(hiddenWeightLine)
+
+        trainingOutputFile.close()
+
 
         #create output
+
 
 
 trainingAlgorithm()
