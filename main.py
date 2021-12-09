@@ -310,8 +310,46 @@ def trainingAlgorithm (inputFile, outputFile) :
         trainingOutputFile.close()
 
 
-        #create output
+def testAlgorithm (inputFile, outputFile):
+
+    neuralNetwork = initializeNodeNetwork()
+
+    #get neural network
+    neuralNetworkFile = open('neuralNetwork.txt', 'r')
+    tempList = neuralNetworkFile.readlines()
+    inputWeightList = tempList[0].split()
+    hiddenWeightList = tempList[1].split()
+
+    temp = 0
+    while temp < len(neuralNetwork[0]):
+        nodeWeightList = inputWeightList[temp].split(',')
+
+        innerTemp = 0
+
+        while innerTemp < 10:
+            neuralNetwork[0][temp].weights[innerTemp] = float(nodeWeightList[innerTemp])
+            innerTemp += 1
+
+        temp += 1
+
+    temp = 0
+    while temp < len(neuralNetwork[1]):
+        nodeWeightList = hiddenWeightList[temp].split(',')
+
+        innerTemp = 0
+
+        while innerTemp < 3:
+            neuralNetwork[1][temp].weights[innerTemp] = float(nodeWeightList[innerTemp])
+            innerTemp += 1
+
+        temp += 1
+
+    #forward propagation
+
+    
 
 
 
-trainingAlgorithm('train.txt', "train_output.txt")
+
+
+testAlgorithm('test.txt', "test_output.txt")
